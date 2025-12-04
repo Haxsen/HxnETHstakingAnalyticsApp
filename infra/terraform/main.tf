@@ -27,13 +27,13 @@ resource "render_web_service" "backend" {
 
   runtime_source = {
     native_runtime = {
-      runtime = "node"
+      runtime = "go"
       repo_url = "https://github.com/Haxsen/HxnETHstakingAnalyticsApp"
       branch = "main"
-      build_command = "cd backend && pnpm install"
+      build_command = "cd backend && go build -o app ."
     }
   }
-  start_command = "cd backend && pnpm start"
+  start_command = "./app"
 }
 
 # Frontend Static Site
@@ -42,5 +42,5 @@ resource "render_static_site" "frontend" {
   repo_url     = "https://github.com/Haxsen/HxnETHstakingAnalyticsApp"
   branch       = "main"
   build_command = "cd frontend && pnpm install && pnpm run build"
-  publish_path = "frontend/dist"
+  publish_path = "frontend/out"
 }
