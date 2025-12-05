@@ -4,22 +4,24 @@
 
 Lightweight Liquid Staking Token Analytics Dashboard
 
-ETH staking analytics is a minimal full-stack Web3 analytics project that compares leading Ethereum Liquid Staking Tokens (LSTs) using 1-year price history and live on-chain activity.
+ETH staking analytics is a minimal full-stack Web3 analytics project that compares leading Ethereum Liquid Staking Tokens (LSTs) using 1-year price history data.
 
-The application ranks tokens from "undervalued" → "overvalued" using an average APR metric derived from monthly price performance and visualizes their 1-year price trends on a single chart.
+The application visualizes LST token performance against ETH on an interactive chart, with each token represented by a differently colored line showing its historical price trends.
 
 ## Features
 
-1. **Dashboard**
-   - Interactive 1-year price comparison chart (all LSTs colored separately).
-   - Sortable valuation table ranked by average APR (undervalue → overvalue).
-   - Displays:
-     - Current price (USD & ETH)
-     - 1Y Avg APR (valuation metric)
-     - TVL (ETH & USD)
-     - Token contract links
+1. **Interactive Price Chart**
+   - 1-year historical price comparison for all LSTs vs ETH
+   - Each token displayed as a differently colored line
+   - Hover tooltips showing exact values and dates
+   - Responsive design for desktop and mobile
 
-2. **API Data Fetcher**
+2. **Token Management**
+   - Dynamic token list from backend API
+   - Support for multiple LST providers
+   - Easy to add new tokens
+
+3. **API Data Fetcher**
    - Fetches real-time on-chain data via Ethereum RPC calls.
    - Retrieves contract data for selected LST tokens:
      - Current balances and supply
@@ -36,8 +38,8 @@ The application ranks tokens from "undervalued" → "overvalued" using an averag
      - Serves REST endpoints for frontend with Redis caching layer.
    - Endpoints:
      - `GET /api/tokens`
-     - `GET /api/token/:id/history`
-     - `GET /api/token/:id/valuation`
+     - `GET /api/token/{tokenSymbol}/history`
+     - `GET /api/token/{tokenSymbol}/valuation`
      - `POST /api/cache/refresh` (manual cache refresh)
 
 4. **PostgreSQL Database**
@@ -57,7 +59,6 @@ The application ranks tokens from "undervalued" → "overvalued" using an averag
 
 Initial set:
 
-- stETH – Lido
 - wstETH – Lido
 - ankrETH – Ankr
 - rETH – Rocket Pool
@@ -111,7 +112,7 @@ This avoids simple single-period overfitting and smooths volatility across time.
 
 ## Development Phases
 
-- **Phase 1 — Infra & Repo Setup (4 hours)**
+- **Phase 1 — Infrastructure Setup (4 hours)** ✅ DONE
   - Initialize git repo.
   - Create Terraform configuration for Render:
     - PostgreSQL (Free Tier).
@@ -119,58 +120,50 @@ This avoids simple single-period overfitting and smooths volatility across time.
     - Frontend static service.
   - Apply infra and provision services.
 
-- **Phase 2 — Database Schema (2 hours)**
-  - Create minimal SQL schema:
-    - Tables:
-      - tokens (basic metadata and contract addresses)
+- **Phase 2 — Core Backend APIs (8 hours)** ✅ DONE
+  - Create minimal SQL schema with LST tokens
+  - Initialize Go application with Chi router
+  - Set up Redis connection for caching
+  - Connect PostgreSQL for token metadata
+  - Implement CoinGecko price API with rate limiting
+  - Expose REST endpoints: `/api/tokens`, `/api/token/{symbol}/history`
 
-- **Phase 3 — Backend & API Integration (10–14 hours)**
-  - Initialize Go application with modules.
-  - Set up Redis connection for caching.
-  - Connect PostgreSQL for minimal token metadata storage.
-  - Implement API data fetchers:
-    - CoinGecko price API integration with Redis caching.
-    - Ethereum RPC calls for on-chain data with caching.
-  - Implement Redis caching layer for API responses.
-  - Expose REST API endpoints with cached data.
+- **Phase 3 — Frontend MVP (6-8 hours)** 🎯 NEXT
+  - Next.js + TypeScript application
+  - Interactive price comparison chart (all LSTs vs ETH)
+  - Different colored lines for each token
+  - Connect to backend APIs
+  - Responsive design
 
-- **Phase 4 — APR Valuation Logic (4–6 hours)**
-  - Implement APR calculation using cached price data.
-  - Compute 12-month averages from API responses.
-  - Cache valuation results in Redis.
-  - Add sorting and ranking logic for dashboard.
+- **Phase 4 — Enhanced Features (8-10 hours)**
+  - APR valuation calculations and rankings
+  - Sortable valuation table
+  - TVL data integration
+  - Advanced caching strategies
 
-- **Phase 5 — Frontend (6–8 hours)**
-  - Next.js + TypeScript application.
-  - Build price comparison chart.
-  - Build sortable valuation table.
-  - Connect to backend APIs.
+- **Phase 5 — Production & CI/CD (4 hours)**
+  - GitHub Actions for automated testing
+  - Auto-deploy to Render on push
+  - Environment configuration
+  - Monitoring and logging
 
-- **Phase 6 — CI/CD & Cron (4 hours)**
-  - GitHub Actions:
-    - Test backend build.
-    - Auto-deploy to Render on push.
-  - Cron job (daily):
-    - Trigger `/api/snapshot`.
-    - Store daily DB snapshots.
-
-- **Phase 7 — Docs & Demo (2–4 hours)**
-  - Final README.
-  - Screenshots + 30 sec demo GIF.
-  - Publish demo URL.
+- **Phase 6 — Polish & Demo (2-4 hours)**
+  - UI/UX improvements
+  - Performance optimizations
+  - Documentation updates
+  - Demo deployment
 
 ## Estimated Effort
 
-| Phase | Time |
-|-------|------|
-| Infra + Setup | 4h |
-| DB Schema | 2h |
-| Backend & Indexer | 10–14h |
-| Valuation Logic | 4–6h |
-| Frontend | 6–8h |
-| CI/CD | 4h |
-| Docs & Polish | 2–4h |
-| **Total** | ≈ 34 – 42 hours |
+| Phase | Time | Status |
+|-------|------|--------|
+| Phase 1: Infrastructure | 4h | ✅ Done |
+| Phase 2: Core Backend | 8h | ✅ Done |
+| Phase 3: Frontend MVP | 6-8h | 🎯 Next |
+| Phase 4: Enhanced Features | 8-10h | Planned |
+| Phase 5: Production & CI/CD | 4h | Planned |
+| Phase 6: Polish & Demo | 2-4h | Planned |
+| **Total** | ≈ 32 – 42 hours | |
 
 ## Local Development
 
@@ -215,7 +208,7 @@ terraform apply
 ## Tech Stack
 
 - **Frontend:** Next.js + TypeScript + Chart.js/Recharts
-- **Backend:** Go + database/sql + Redis + standard library
+- **Backend:** Go + database/sql + Redis + Chi router
 - **Cache:** Redis (in-memory data store)
 - **Indexer:** go-ethereum getLogs poller
 - **Database:** PostgreSQL (Render)
@@ -229,7 +222,7 @@ terraform apply
 
 ## Author
 
-Built as a Web3 backend + devops portfolio project showcasing:
+I (haxsen) built this as a Web3 frontend + backend + devops portfolio project showcasing:
 
 ✅ Data indexing  
 ✅ Blockchain RPC & contract calls  

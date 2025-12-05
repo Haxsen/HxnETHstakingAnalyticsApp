@@ -1,0 +1,61 @@
+info:
+  contact: {}
+paths:
+  /api/token/{tokenSymbol}/history:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve 1-year price history for a specific LST token
+      parameters:
+      - description: Token symbol (e.g., wstETH, rETH)
+        in: path
+        name: tokenSymbol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'price_history: array of price points, count: number of data
+            points'
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: 'error: invalid token symbol'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 'error: failed to fetch price data'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get price history for a token
+      tags:
+      - tokens
+  /api/tokens:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all active Liquid Staking Tokens being tracked
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'tokens: array of token objects, count: number of tokens'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 'error: error message'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all tracked LST tokens
+      tags:
+      - tokens
+swagger: "2.0"
