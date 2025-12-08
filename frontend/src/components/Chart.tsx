@@ -18,11 +18,11 @@ export default function Chart({ tokens, histories, loading = false, className = 
 
   const chartOption = useMemo(() => {
     if (tokens.length === 0) {
-      return createChartOption([], [], loading, theme)
+      return createChartOption([], [], [], loading, theme)
     }
 
-    const { xAxisData, series } = prepareChartData(tokens, histories)
-    return createChartOption(xAxisData, series, loading, theme)
+    const { xAxisData, timestamps, series } = prepareChartData(tokens, histories)
+    return createChartOption(xAxisData, timestamps, series, loading, theme)
   }, [tokens, histories, loading, theme])
 
   const chartStyle = {

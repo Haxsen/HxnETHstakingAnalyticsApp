@@ -22,7 +22,6 @@ export function formatTimestamp(timestamp: number): string {
   return new Date(timestamp).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
   })
 }
 
@@ -35,6 +34,7 @@ export function prepareChartData(
   histories: Record<string, { price_history: Array<{ timestamp: number; price: number }> }>
 ): {
   xAxisData: string[]
+  timestamps: number[]
   series: ChartSeries[]
 } {
   // Collect all unique timestamps and sort them
@@ -110,11 +110,12 @@ export function prepareChartData(
     })
   }
 
-  return { xAxisData, series }
+  return { xAxisData, timestamps: sortedTimestamps, series }
 }
 
 export function createChartOption(
   xAxisData: string[],
+  timestamps: number[],
   series: ChartSeries[],
   loading = false,
   theme: 'light' | 'dark' = 'light'
@@ -134,11 +135,21 @@ export function createChartOption(
     },
     tooltip: {
       trigger: 'axis',
-      formatter: (params: any) => {
+      formatter: (params: any, ticket: any, callback: any) => {
         if (!params || params.length === 0) return ''
 
-        const date = params[0].name
-        let content = `<strong>${date}</strong><br/>`
+        // Get the data index to find the original timestamp
+        const dataIndex = params[0].dataIndex
+        const originalTimestamp = timestamps[dataIndex]
+
+        // Format the full date for tooltip
+        const fullDate = new Date(originalTimestamp).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+
+        let content = `<strong>${fullDate}</strong><br/>`
 
         params.forEach((param: any) => {
           if (param.value !== null && param.value !== undefined) {
@@ -180,7 +191,7 @@ export function createChartOption(
       type: 'value',
       name: 'Price (ETH)',
       nameLocation: 'middle',
-      nameGap: 50,
+      nameGap: 70,
       min: 'dataMin',
       axisLabel: {
         formatter: (value: number) => formatPrice(value),
