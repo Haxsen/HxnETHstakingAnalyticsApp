@@ -24,6 +24,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/Haxsen/HxnETHstakingAnalyticsApp/backend/internal/cache"
 	"github.com/Haxsen/HxnETHstakingAnalyticsApp/backend/internal/db"
@@ -32,6 +33,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 )
 
@@ -69,6 +71,22 @@ func main() {
 
 	// Initialize router
 	r := chi.NewRouter()
+
+	// CORS middleware
+	corsOrigins := os.Getenv("CORS_ALLOWED_ORIGINS")
+	if corsOrigins == "" {
+		corsOrigins = "http://localhost:3000,http://127.0.0.1:3000"
+	}
+	allowedOrigins := strings.Split(corsOrigins, ",")
+
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins:   allowedOrigins,
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300,
+	}))
 
 	// Middleware
 	r.Use(middleware.Logger)

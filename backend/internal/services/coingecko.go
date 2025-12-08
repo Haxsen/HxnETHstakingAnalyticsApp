@@ -40,7 +40,7 @@ func NewCoinGeckoClient(apiKey string) *CoinGeckoClient {
 // symbolToCoinGeckoID maps our token symbols to CoinGecko coin IDs
 var symbolToCoinGeckoID = map[string]string{
 	"wstETH":  "wrapped-steth",
-	"ankrETH": "ankr-staked-eth",
+	"ankrETH": "ankreth",
 	"rETH":    "rocket-pool-eth",
 	"wBETH":   "wrapped-beacon-eth",
 	"pufETH":  "pufeth",
