@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Chart from '@/components/Chart'
+import ThemeToggle from '@/components/ThemeToggle'
 import { Token, LoadingState, ErrorState } from '@/lib/types'
 import { fetchTokens, fetchTokenHistory, getErrorMessage } from '@/lib/api'
 
@@ -71,27 +72,33 @@ export default function Home() {
   const hasError = errors.tokens || errors.history
 
   return (
-    <main className="min-h-screen bg-gray-50 py-8">
+    <main className="min-h-screen py-8 transition-colors duration-200" style={{ backgroundColor: 'rgb(var(--bg-primary))' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            ETH Staking Analytics Dashboard
-          </h1>
-          <p className="text-gray-600">
-            Compare Liquid Staking Token performance against ETH over the past year
-          </p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold mb-2" style={{ color: 'rgb(var(--text-primary))' }}>
+              ETH Staking Analytics Dashboard
+            </h1>
+            <p style={{ color: 'rgb(var(--text-secondary))' }}>
+              Compare Liquid Staking Token performance against ETH over the past year
+            </p>
+          </div>
+          <ThemeToggle />
         </div>
 
         {/* Error Display */}
         {hasError && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+          <div className="mb-6 p-4 rounded-md border" style={{
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            borderColor: 'rgb(220, 38, 38)',
+          }}>
             <div className="flex">
               <div className="ml-3">
-                <h3 className="text-sm font-medium text-red-800">
+                <h3 className="text-sm font-medium" style={{ color: 'rgb(185, 28, 28)' }}>
                   Error loading data
                 </h3>
-                <div className="mt-2 text-sm text-red-700">
+                <div className="mt-2 text-sm" style={{ color: 'rgb(153, 27, 27)' }}>
                   {errors.tokens && <p>Tokens: {errors.tokens}</p>}
                   {errors.history && <p>Price data: {errors.history}</p>}
                 </div>
@@ -101,12 +108,15 @@ export default function Home() {
         )}
 
         {/* Chart Container */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="rounded-lg shadow-sm border p-6 transition-colors duration-200" style={{
+          backgroundColor: 'rgb(var(--bg-secondary))',
+          borderColor: 'rgb(var(--border))'
+        }}>
           {isLoading ? (
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading price data...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderBottomColor: 'rgb(59, 130, 246)' }}></div>
+                <p style={{ color: 'rgb(var(--text-secondary))' }}>Loading price data...</p>
               </div>
             </div>
           ) : tokens.length > 0 ? (
@@ -118,7 +128,7 @@ export default function Home() {
           ) : (
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
-                <p className="text-gray-500">No token data available</p>
+                <p style={{ color: 'rgb(var(--text-secondary))' }}>No token data available</p>
               </div>
             </div>
           )}
@@ -127,22 +137,26 @@ export default function Home() {
         {/* Token List */}
         {tokens.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            <h2 className="text-xl font-semibold mb-4" style={{ color: 'rgb(var(--text-primary))' }}>
               Tracked Tokens ({tokens.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {tokens.map((token) => (
                 <div
                   key={token.symbol}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 p-4"
+                  className="rounded-lg shadow-sm border p-4 transition-colors duration-200"
+                  style={{
+                    backgroundColor: 'rgb(var(--bg-secondary))',
+                    borderColor: 'rgb(var(--border))'
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-medium text-gray-900">{token.symbol}</h3>
-                      <p className="text-sm text-gray-600">{token.name}</p>
+                      <h3 className="font-medium" style={{ color: 'rgb(var(--text-primary))' }}>{token.symbol}</h3>
+                      <p className="text-sm" style={{ color: 'rgb(var(--text-secondary))' }}>{token.name}</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-xs text-gray-500 uppercase tracking-wide">
+                      <span className="text-xs uppercase tracking-wide" style={{ color: 'rgb(var(--text-secondary))' }}>
                         {token.blockchain}
                       </span>
                     </div>

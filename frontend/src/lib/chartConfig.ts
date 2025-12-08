@@ -116,8 +116,12 @@ export function prepareChartData(
 export function createChartOption(
   xAxisData: string[],
   series: ChartSeries[],
-  loading = false
+  loading = false,
+  theme: 'light' | 'dark' = 'light'
 ): EChartsOption {
+  const textColor = theme === 'dark' ? '#f8fafc' : '#0f172a' // slate-50 : slate-900
+  const axisColor = theme === 'dark' ? '#64748b' : '#64748b' // slate-500 for both (good contrast)
+
   return {
     title: {
       text: 'LST Token Price Comparison (vs ETH)',
@@ -125,6 +129,7 @@ export function createChartOption(
       textStyle: {
         fontSize: 16,
         fontWeight: 'bold',
+        color: textColor,
       },
     },
     tooltip: {
@@ -147,6 +152,9 @@ export function createChartOption(
     legend: {
       data: series.map(s => s.name),
       top: 30,
+      textStyle: {
+        color: textColor,
+      },
     },
     grid: {
       left: '3%',
@@ -162,6 +170,10 @@ export function createChartOption(
       axisLabel: {
         rotate: 45,
         interval: 'auto',
+        color: axisColor,
+      },
+      nameTextStyle: {
+        color: textColor,
       },
     },
     yAxis: {
@@ -172,6 +184,10 @@ export function createChartOption(
       min: 'dataMin',
       axisLabel: {
         formatter: (value: number) => formatPrice(value),
+        color: axisColor,
+      },
+      nameTextStyle: {
+        color: textColor,
       },
     },
     series,

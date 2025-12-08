@@ -4,6 +4,7 @@ import React, { useMemo } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { Token } from '@/lib/types'
 import { prepareChartData, createChartOption } from '@/lib/chartConfig'
+import { useTheme } from '@/lib/theme'
 
 interface ChartProps {
   tokens: Token[]
@@ -13,14 +14,16 @@ interface ChartProps {
 }
 
 export default function Chart({ tokens, histories, loading = false, className = '' }: ChartProps) {
+  const { theme } = useTheme()
+
   const chartOption = useMemo(() => {
     if (tokens.length === 0) {
-      return createChartOption([], [], loading)
+      return createChartOption([], [], loading, theme)
     }
 
     const { xAxisData, series } = prepareChartData(tokens, histories)
-    return createChartOption(xAxisData, series, loading)
-  }, [tokens, histories, loading])
+    return createChartOption(xAxisData, series, loading, theme)
+  }, [tokens, histories, loading, theme])
 
   const chartStyle = {
     height: '500px',

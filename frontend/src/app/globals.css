@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+/* Custom theme styles */
+.light-theme {
+  --bg-primary: 248 250 252;
+  --bg-secondary: 255 255 255;
+  --text-primary: 15 23 42;
+  --text-secondary: 100 116 139;
+  --border: 226 232 240;
+}
+
+.dark-theme {
+  --bg-primary: 15 23 42;
+  --bg-secondary: 30 41 59;
+  --text-primary: 248 250 252;
+  --text-secondary: 148 163 184;
+  --border: 51 65 85;
+}
