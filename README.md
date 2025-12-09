@@ -128,14 +128,15 @@ This avoids simple single-period overfitting and smooths volatility across time.
   - Implement CoinGecko price API with rate limiting
   - Expose REST endpoints: `/api/tokens`, `/api/token/{symbol}/history`
 
-- **Phase 3 — Frontend MVP (6-8 hours)** 🎯 NEXT
-  - Next.js + TypeScript application
+- **Phase 3 — Frontend MVP (6-8 hours)** ✅ DONE
+  - Next.js + TypeScript application with Apache ECharts
   - Interactive price comparison chart (all LSTs vs ETH)
-  - Different colored lines for each token
-  - Connect to backend APIs
-  - Responsive design
+  - Different colored lines for each token with theme support
+  - Connect to backend APIs with error handling
+  - Responsive design with light/dark theme switching
+  - Crypto donate widget with 6 blockchain addresses
 
-- **Phase 4 — Enhanced Features (8-10 hours)**
+- **Phase 4 — Enhanced Features (8-10 hours)** 🎯 NEXT
   - APR valuation calculations and rankings
   - Sortable valuation table
   - TVL data integration
@@ -159,8 +160,8 @@ This avoids simple single-period overfitting and smooths volatility across time.
 |-------|------|--------|
 | Phase 1: Infrastructure | 4h | ✅ Done |
 | Phase 2: Core Backend | 8h | ✅ Done |
-| Phase 3: Frontend MVP | 6-8h | 🎯 Next |
-| Phase 4: Enhanced Features | 8-10h | Planned |
+| Phase 3: Frontend MVP | 6-8h | ✅ Done |
+| Phase 4: Enhanced Features | 8-10h | 🎯 Next |
 | Phase 5: Production & CI/CD | 4h | Planned |
 | Phase 6: Polish & Demo | 2-4h | Planned |
 | **Total** | ≈ 32 – 42 hours | |
@@ -207,7 +208,7 @@ terraform apply
 
 ## Tech Stack
 
-- **Frontend:** Next.js + TypeScript + Chart.js/Recharts
+- **Frontend:** Next.js + TypeScript + Apache ECharts
 - **Backend:** Go + database/sql + Redis + Chi router
 - **Cache:** Redis (in-memory data store)
 - **Indexer:** go-ethereum getLogs poller

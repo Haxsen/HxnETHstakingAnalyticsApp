@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Chart from '@/components/Chart'
 import ThemeToggle from '@/components/ThemeToggle'
+import DonateButton from '@/components/DonateButton'
 import { Token, LoadingState, ErrorState } from '@/lib/types'
 import { fetchTokens, fetchTokenHistory, getErrorMessage } from '@/lib/api'
 
@@ -84,7 +85,10 @@ export default function Home() {
               Compare Liquid Staking Token performance against ETH over the past year
             </p>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <DonateButton />
+            <ThemeToggle />
+          </div>
         </div>
 
         {/* Error Display */}
