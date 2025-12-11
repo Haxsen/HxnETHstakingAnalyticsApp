@@ -66,6 +66,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/token/{tokenSymbol}/valuation": {
+            "get": {
+                "description": "Retrieve APR, stability, TVL, and valuation remarks for a specific LST token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tokens"
+                ],
+                "summary": "Get valuation metrics for a token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token symbol (e.g., wstETH, rETH)",
+                        "name": "tokenSymbol",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "valuation metrics for the token",
+                        "schema": {
+                            "$ref": "#/definitions/services.ValuationData"
+                        }
+                    },
+                    "400": {
+                        "description": "error: invalid token symbol",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error: failed to calculate valuation",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/tokens": {
             "get": {
                 "description": "Retrieve a list of all active Liquid Staking Tokens being tracked",
@@ -96,6 +146,64 @@ const docTemplate = `{
                             }
                         }
                     }
+                }
+            }
+        },
+        "/api/valuations": {
+            "get": {
+                "description": "Retrieve APR, stability, TVL, and valuation remarks for all tracked LST tokens (sortable table data)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tokens"
+                ],
+                "summary": "Get valuation metrics for all tokens",
+                "responses": {
+                    "200": {
+                        "description": "valuations: array of valuation objects, count: number of valuations",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "error: failed to fetch valuations",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "services.ValuationData": {
+            "type": "object",
+            "properties": {
+                "apr": {
+                    "type": "number"
+                },
+                "last_updated": {
+                    "type": "string"
+                },
+                "remarks": {
+                    "type": "string"
+                },
+                "stability": {
+                    "type": "number"
+                },
+                "token_symbol": {
+                    "type": "string"
+                },
+                "tvl": {
+                    "type": "number"
                 }
             }
         }

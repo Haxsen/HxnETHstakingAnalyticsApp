@@ -47,8 +47,10 @@ backend/
 │   ├── cache/             # Redis caching layer
 │   │   └── redis.go       # Redis client setup
 │   └── services/          # Business logic & external APIs
+│       ├── cache.go       # Caching wrapper functions
 │       ├── coingecko.go   # CoinGecko API client
-│       └── cache.go       # Caching wrapper functions
+│       ├── tvl.go         # On-chain TVL fetching via ERC20 totalSupply
+│       └── valuation.go   # APR calculations, stability scoring, valuation remarks
 ```
 
 ## Prerequisites
@@ -117,9 +119,91 @@ CREATE TABLE tokens (
 | `GET` | `/api/tokens` | List all tracked tokens |
 | `GET` | `/api/token/{tokenSymbol}/history` | Get 1-year price history for a token (ETH denominated) |
 | `GET` | `/api/token/{tokenSymbol}/valuation` | Get APR valuation metrics for a token |
+| `GET` | `/api/valuations` | Get valuation metrics for all tokens (sortable table data) |
 | `POST` | `/api/cache/refresh` | Manually refresh Redis cache |
 | `GET` | `/health` | Health check endpoint |
 | `GET` | `/swagger/*` | Interactive API documentation |
+
+## Valuation Methodology
+
+### Primary Metric: 1-Year Monthly Average APR
+
+Each token's valuation score is computed from monthly price performance over 1 year:
+
+**Step 1: Monthly Price Averages**
+```
+# Group 365 daily prices into 12 monthly chunks (~30 days each)
+monthly_avg[m] = mean(daily_prices[chunk_m])
+```
+
+**Step 2: Monthly Returns**
+```
+monthly_return[1] = 0  # First month return (compared to itself)
+monthly_return[m] = monthly_avg[m] - monthly_avg[m-1]  # For m = 2 to 12
+# This gives 12 monthly return values
+```
+
+**Step 3: Annualized APR**
+```
+apr = sum(monthly_return[1..12])
+```
+
+### Stability Score
+
+Calculated as the coefficient of variation of daily returns:
+
+```
+stability = 1 / (1 + std_dev(daily_return[1..365]) / abs(mean(daily_return[1..365])))
+```
+
+- Higher stability score → more consistent daily performance
+- Lower stability score → higher volatility in daily returns
+
+### TVL (Total Value Locked)
+
+- Fetched via ERC20 `totalSupply()` contract calls on Ethereum mainnet
+- Represents circulating supply of LST tokens
+- Cached for 5 minutes due to on-chain data volatility
+- Used as secondary ranking factor alongside APR and stability
+
+### Valuation Remarks
+
+Based on current price vs. expected price projection:
+
+**Inputs:**
+- Current Price: Today's price
+- Last Month Average: Average price of most recent 30 days
+- Average Monthly Return: APR ÷ 12 (average monthly price change)
+
+**Expected Price Formula:**
+```
+expected_price = (average_monthly_return ÷ 2) + last_month_average
+```
+
+**Valuation Logic:**
+- **Very Undervalued**: Current Price >1% below Expected Price
+- **Undervalued**: Current Price 0.1%-1% below Expected Price
+- **Fair Value**: Current Price ±0.1% of Expected Price
+- **Overvalued**: Current Price 0.1%-1% above Expected Price
+- **Very Overvalued**: Current Price >1% above Expected Price
+
+## Phase 4 Features (Enhanced Valuation)
+
+### Valuation Calculations
+- **APR Calculation**: 1-year monthly average APR from 30-day price chunks (360 days total)
+- **Monthly Processing**: Groups daily prices into 12 monthly averages, calculates differences
+- **Stability Score**: Coefficient of variation of daily returns (higher = more stable)
+- **Valuation Remarks**: 5-level assessment based on current price vs. expected price projection
+- **Expected Price Formula**: `(average_monthly_return ÷ 2) + last_month_average`
+
+### Enhanced Caching
+- **Valuation Data**: 10-minute cache TTL for computed metrics
+- **TVL Data**: 5-minute cache TTL for on-chain data
+- **Price History**: 1-hour cache TTL (CoinGecko daily data)
+
+### New Services
+- `valuation.go`: Monthly APR calculations, stability scoring, 5-level valuation system
+- `tvl.go`: On-chain TVL fetching via ERC20 totalSupply() contract calls
 
 ## Development
 

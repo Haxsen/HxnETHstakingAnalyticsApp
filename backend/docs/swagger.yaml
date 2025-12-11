@@ -1,3 +1,19 @@
+definitions:
+  services.ValuationData:
+    properties:
+      apr:
+        type: number
+      last_updated:
+        type: string
+      remarks:
+        type: string
+      stability:
+        type: number
+      token_symbol:
+        type: string
+      tvl:
+        type: number
+    type: object
 info:
   contact: {}
 paths:
@@ -36,6 +52,40 @@ paths:
       summary: Get price history for a token
       tags:
       - tokens
+  /api/token/{tokenSymbol}/valuation:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve APR, stability, TVL, and valuation remarks for a specific
+        LST token
+      parameters:
+      - description: Token symbol (e.g., wstETH, rETH)
+        in: path
+        name: tokenSymbol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: valuation metrics for the token
+          schema:
+            $ref: '#/definitions/services.ValuationData'
+        "400":
+          description: 'error: invalid token symbol'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: 'error: failed to calculate valuation'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get valuation metrics for a token
+      tags:
+      - tokens
   /api/tokens:
     get:
       consumes:
@@ -56,6 +106,29 @@ paths:
               type: string
             type: object
       summary: Get all tracked LST tokens
+      tags:
+      - tokens
+  /api/valuations:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve APR, stability, TVL, and valuation remarks for all tracked
+        LST tokens (sortable table data)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 'valuations: array of valuation objects, count: number of valuations'
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: 'error: failed to fetch valuations'
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get valuation metrics for all tokens
       tags:
       - tokens
 swagger: "2.0"

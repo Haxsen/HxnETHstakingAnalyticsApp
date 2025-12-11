@@ -65,25 +65,13 @@ Initial set:
 - wBETH – Binance
 - pufETH – Puffer Finance
 
-## Valuation Methodology
+## Key Features
 
-**Metric: 12-Month Average APR**
-
-Each token's valuation score is computed from monthly price performance:
-
-```
-monthly_return[i] = (price_end[i] / price_start[i]) - 1
-monthly_apr[i] = monthly_return[i] * 12
-
-avg_12mo_apr = mean(monthly_apr[1..12])
-```
-
-Tokens are sorted:
-
-- LOW avg_12mo_apr → "Undervalued"
-- HIGH avg_12mo_apr → "Overvalued"
-
-This avoids simple single-period overfitting and smooths volatility across time.
+- **Advanced Valuation**: APR calculations, stability scoring, and price-based valuation remarks
+- **Real-time TVL**: On-chain total supply data for accurate circulating supply metrics
+- **Comprehensive Analytics**: 1-year price history with interactive charting
+- **Performance Optimized**: Redis caching for fast data retrieval
+- **Production Ready**: Containerized deployment with infrastructure as code
 
 ## Architecture
 
@@ -137,10 +125,14 @@ This avoids simple single-period overfitting and smooths volatility across time.
   - Crypto donate widget with 6 blockchain addresses
 
 - **Phase 4 — Enhanced Features (8-10 hours)** 🎯 NEXT
-  - APR valuation calculations and rankings
-  - Sortable valuation table
-  - TVL data integration
-  - Advanced caching strategies
+  - APR valuation calculations and rankings (1-year monthly average)
+  - Sortable valuation table with columns:
+    - APR (1-year monthly average APR)
+    - Stability (volatility based on daily return variance)
+    - TVL (Total Value Locked)
+    - Remarks (valuation status: very undervalued → very overvalued)
+  - TVL data integration via on-chain data
+  - Advanced caching strategies for valuation metrics
 
 - **Phase 5 — Production & CI/CD (4 hours)**
   - GitHub Actions for automated testing

@@ -109,6 +109,7 @@ func main() {
 		r.Get("/tokens", getTokensHandler)
 		r.Get("/token/{id}/history", getTokenHistoryHandler)
 		r.Get("/token/{id}/valuation", getTokenValuationHandler)
+		r.Get("/valuations", getAllValuationsHandler)
 		r.Post("/cache/refresh", refreshCacheHandler)
 	})
 
@@ -195,11 +196,156 @@ func getTokenHistoryHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// getTokenValuationHandler returns valuation metrics for a specific token
+//
+// @Summary Get valuation metrics for a token
+// @Description Retrieve APR, stability, TVL, and valuation remarks for a specific LST token
+// @Tags tokens
+// @Accept json
+// @Produce json
+// @Param tokenSymbol path string true "Token symbol (e.g., wstETH, rETH)"
+// @Success 200 {object} services.ValuationData "valuation metrics for the token"
+// @Failure 400 {object} map[string]string "error: invalid token symbol"
+// @Failure 500 {object} map[string]string "error: failed to calculate valuation"
+// @Router /api/token/{tokenSymbol}/valuation [get]
 func getTokenValuationHandler(w http.ResponseWriter, r *http.Request) {
-	tokenID := chi.URLParam(r, "id")
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"message": "Token valuation for ` + tokenID + ` - TODO"}`))
+
+	tokenSymbol := chi.URLParam(r, "id")
+
+	// Validate that the token exists in our database
+	token, err := db.GetTokenBySymbol(tokenSymbol)
+	if err != nil {
+		http.Error(w, `{"error": "Token not found or not supported"}`, http.StatusBadRequest)
+		return
+	}
+
+	ctx := r.Context()
+
+	// Try to get from cache first
+	if cachedValuation, err := services.GetCachedValuation(ctx, tokenSymbol); err == nil && cachedValuation != nil {
+		if err := json.NewEncoder(w).Encode(cachedValuation); err != nil {
+			log.Printf("Error encoding cached response: %v", err)
+			http.Error(w, `{"error": "Failed to encode response"}`, http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Cache miss - compute valuation
+	priceHistory, err := coingeckoClient.GetPriceHistoryWithCache(ctx, tokenSymbol)
+	if err != nil {
+		log.Printf("Error fetching price history for %s: %v", tokenSymbol, err)
+		http.Error(w, `{"error": "Failed to fetch price history"}`, http.StatusInternalServerError)
+		return
+	}
+
+	// Fetch TVL data
+	rpcURL := os.Getenv("ETHEREUM_RPC_URL")
+	if rpcURL == "" {
+		rpcURL = "https://ethereum-rpc.publicnode.com"
+	}
+
+	tvl, err := services.FetchTVL(ctx, tokenSymbol, token.ContractAddress, token.Decimals, rpcURL)
+	if err != nil {
+		log.Printf("Error fetching TVL for %s: %v", tokenSymbol, err)
+		// Continue with TVL = 0 rather than failing completely
+		tvl = 0
+	}
+
+	// Calculate valuation
+	valuation, err := services.CalculateValuation(ctx, tokenSymbol, priceHistory, tvl)
+	if err != nil {
+		log.Printf("Error calculating valuation for %s: %v", tokenSymbol, err)
+		http.Error(w, `{"error": "Failed to calculate valuation"}`, http.StatusInternalServerError)
+		return
+	}
+
+	// Cache the result
+	if cacheErr := services.SetCachedValuation(ctx, tokenSymbol, *valuation); cacheErr != nil {
+		log.Printf("Warning: failed to cache valuation for %s: %v", tokenSymbol, cacheErr)
+	}
+
+	if err := json.NewEncoder(w).Encode(valuation); err != nil {
+		log.Printf("Error encoding response: %v", err)
+		http.Error(w, `{"error": "Failed to encode response"}`, http.StatusInternalServerError)
+		return
+	}
+}
+
+// getAllValuationsHandler returns valuation metrics for all tokens
+//
+// @Summary Get valuation metrics for all tokens
+// @Description Retrieve APR, stability, TVL, and valuation remarks for all tracked LST tokens (sortable table data)
+// @Tags tokens
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]interface{} "valuations: array of valuation objects, count: number of valuations"
+// @Failure 500 {object} map[string]string "error: failed to fetch valuations"
+// @Router /api/valuations [get]
+func getAllValuationsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	// Get all tokens
+	tokens, err := db.GetAllTokens()
+	if err != nil {
+		log.Printf("Error fetching tokens: %v", err)
+		http.Error(w, `{"error": "Failed to fetch tokens"}`, http.StatusInternalServerError)
+		return
+	}
+
+	ctx := r.Context()
+	rpcURL := os.Getenv("ETHEREUM_RPC_URL")
+	if rpcURL == "" {
+		rpcURL = "https://ethereum-rpc.publicnode.com"
+	}
+
+	var valuations []services.ValuationData
+
+	// Calculate valuation for each token
+	for _, token := range tokens {
+		// Try cache first
+		if cachedValuation, err := services.GetCachedValuation(ctx, token.Symbol); err == nil && cachedValuation != nil {
+			valuations = append(valuations, *cachedValuation)
+			continue
+		}
+
+		// Cache miss - compute valuation
+		priceHistory, err := coingeckoClient.GetPriceHistoryWithCache(ctx, token.Symbol)
+		if err != nil {
+			log.Printf("Error fetching price history for %s: %v", token.Symbol, err)
+			continue // Skip this token but continue with others
+		}
+
+		tvl, err := services.FetchTVL(ctx, token.Symbol, token.ContractAddress, token.Decimals, rpcURL)
+		if err != nil {
+			log.Printf("Error fetching TVL for %s: %v", token.Symbol, err)
+			tvl = 0 // Continue with TVL = 0
+		}
+
+		valuation, err := services.CalculateValuation(ctx, token.Symbol, priceHistory, tvl)
+		if err != nil {
+			log.Printf("Error calculating valuation for %s: %v", token.Symbol, err)
+			continue // Skip this token but continue with others
+		}
+
+		// Cache the result
+		if cacheErr := services.SetCachedValuation(ctx, token.Symbol, *valuation); cacheErr != nil {
+			log.Printf("Warning: failed to cache valuation for %s: %v", token.Symbol, cacheErr)
+		}
+
+		valuations = append(valuations, *valuation)
+	}
+
+	response := map[string]interface{}{
+		"valuations": valuations,
+		"count":      len(valuations),
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Error encoding response: %v", err)
+		http.Error(w, `{"error": "Failed to encode response"}`, http.StatusInternalServerError)
+		return
+	}
 }
 
 func refreshCacheHandler(w http.ResponseWriter, r *http.Request) {
