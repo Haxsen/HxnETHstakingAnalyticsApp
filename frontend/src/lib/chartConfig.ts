@@ -162,7 +162,7 @@ export function createChartOption(
     },
     legend: {
       data: series.map(s => s.name),
-      top: 30,
+      top: 50,
       textStyle: {
         color: textColor,
       },

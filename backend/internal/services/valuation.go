@@ -14,6 +14,7 @@ import (
 // ValuationData represents the valuation metrics for a token
 type ValuationData struct {
 	TokenSymbol string    `json:"token_symbol"`
+	Price       float64   `json:"price"`
 	APR         float64   `json:"apr"`
 	Stability   float64   `json:"stability"`
 	TVL         float64   `json:"tvl"`
@@ -278,6 +279,7 @@ func CalculateValuation(ctx context.Context, symbol string, priceHistory []Price
 
 	valuation := &ValuationData{
 		TokenSymbol: symbol,
+		Price:       currentPrice,
 		APR:         apr,
 		Stability:   stability,
 		TVL:         tvl,

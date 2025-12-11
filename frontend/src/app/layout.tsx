@@ -3,7 +3,7 @@ import './globals.css'
 import { ThemeProvider } from '@/lib/theme'
 
 export const metadata: Metadata = {
-  title: 'ETH Staking Analytics',
+  title: 'ETH Liquid Staking Analytics',
   description: 'Lightweight Liquid Staking Token Analytics Dashboard',
 }
 

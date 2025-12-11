@@ -193,6 +193,9 @@ const docTemplate = `{
                 "last_updated": {
                     "type": "string"
                 },
+                "price": {
+                    "type": "number"
+                },
                 "remarks": {
                     "type": "string"
                 },

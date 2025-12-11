@@ -40,6 +40,7 @@ The application visualizes LST token performance against ETH on an interactive c
      - `GET /api/tokens`
      - `GET /api/token/{tokenSymbol}/history`
      - `GET /api/token/{tokenSymbol}/valuation`
+     - `GET /api/valuations` (sortable table data)
      - `POST /api/cache/refresh` (manual cache refresh)
 
 4. **PostgreSQL Database**
@@ -124,7 +125,7 @@ Initial set:
   - Responsive design with light/dark theme switching
   - Crypto donate widget with 6 blockchain addresses
 
-- **Phase 4 — Enhanced Features (8-10 hours)** 🎯 NEXT
+- **Phase 4 — Enhanced Features (8-10 hours)** ✅ DONE
   - APR valuation calculations and rankings (1-year monthly average)
   - Sortable valuation table with columns:
     - APR (1-year monthly average APR)
@@ -153,7 +154,7 @@ Initial set:
 | Phase 1: Infrastructure | 4h | ✅ Done |
 | Phase 2: Core Backend | 8h | ✅ Done |
 | Phase 3: Frontend MVP | 6-8h | ✅ Done |
-| Phase 4: Enhanced Features | 8-10h | 🎯 Next |
+| Phase 4: Enhanced Features | 8-10h | ✅ Done |
 | Phase 5: Production & CI/CD | 4h | Planned |
 | Phase 6: Polish & Demo | 2-4h | Planned |
 | **Total** | ≈ 32 – 42 hours | |

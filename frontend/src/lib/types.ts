@@ -28,10 +28,22 @@ export interface TokenHistoryResponse {
   count: number
 }
 
-export interface TokenValuationResponse {
-  // TODO: Define when valuation endpoint is implemented
-  message: string
+export interface ValuationData {
+  token_symbol: string
+  price: number
+  apr: number
+  stability: number
+  tvl: number
+  remarks: string
+  last_updated: string
 }
+
+export interface ValuationsResponse {
+  valuations: ValuationData[]
+  count: number
+}
+
+export interface TokenValuationResponse extends ValuationData {}
 
 export interface CacheRefreshResponse {
   message: string
@@ -63,11 +75,13 @@ export interface ChartSeries {
 export interface LoadingState {
   tokens: boolean
   history: boolean
+  valuations: boolean
   [key: string]: boolean
 }
 
 export interface ErrorState {
   tokens?: string
   history?: string
+  valuations?: string
   [key: string]: string | undefined
 }

@@ -9,7 +9,7 @@ interface DonateModalProps {
 
 const WALLETS = [
   { name: 'BTC', address: process.env.NEXT_PUBLIC_WALLET_BTC || '' },
-  { name: 'EVM(ETH/BNB/BASE/L2s)', address: process.env.NEXT_PUBLIC_WALLET_ETH || '' },
+  { name: 'EVM (ETH/BNB/BASE/L2s)', address: process.env.NEXT_PUBLIC_WALLET_ETH || '' },
   { name: 'SOL', address: process.env.NEXT_PUBLIC_WALLET_SOL || '' },
   { name: 'SUI', address: process.env.NEXT_PUBLIC_WALLET_SUI || '' },
   { name: 'APTOS', address: process.env.NEXT_PUBLIC_WALLET_APTOS || '' },

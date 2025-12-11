@@ -3,6 +3,7 @@ import {
   TokensResponse,
   TokenHistoryResponse,
   TokenValuationResponse,
+  ValuationsResponse,
   CacheRefreshResponse,
 } from './types'
 
@@ -49,6 +50,10 @@ export async function fetchTokenHistory(symbol: string): Promise<TokenHistoryRes
 
 export async function fetchTokenValuation(symbol: string): Promise<TokenValuationResponse> {
   return apiRequest<TokenValuationResponse>(`/api/token/${symbol}/valuation`)
+}
+
+export async function fetchValuations(): Promise<ValuationsResponse> {
+  return apiRequest<ValuationsResponse>('/api/valuations')
 }
 
 export async function refreshCache(): Promise<CacheRefreshResponse> {

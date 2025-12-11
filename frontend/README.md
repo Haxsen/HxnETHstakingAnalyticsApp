@@ -201,6 +201,32 @@ This section outlines the implementation plan for Phase 3 frontend MVP (estimate
    - Update environment variables for production
    - Test build locally before deployment
 
+## Phase 4 — Enhanced Features (6-8 hours)
+
+### Simple Valuation Table (3 hours)
+- Add a sortable table below the existing chart showing: Token, APR, Stability, TVL, Remarks
+- Basic column sorting for APR, Stability, TVL (ascending/descending)
+- Color-code remarks: green for "Undervalued"/"Very Undervalued", red for "Overvalued"/"Very Overvalued"
+- Keep table responsive and simple with horizontal scroll on mobile
+
+### API Integration (2 hours)
+- Update `types.ts` with proper `ValuationData` interface matching backend
+- Add `fetchValuations()` function to `api.ts` for `/api/valuations` endpoint
+- Add loading/error states for valuation data in main page
+- Handle API errors gracefully with user-friendly messages
+
+### Layout Update (1 hour)
+- Add valuation table section below existing chart on main page
+- Simple section header: "Valuation Metrics"
+- Maintain existing responsive design and theme support
+- Keep donate button and theme toggle in header
+
+### Basic Polish (30 min - 1 hour)
+- Format numbers nicely: APR as percentage (2 decimals), TVL in millions/billions with M/B suffix
+- Add "Last updated" timestamp for valuation data
+- Test with real backend data and verify sorting works
+- Ensure table looks good on mobile devices
+
 ## Development
 
 ### Available Scripts
