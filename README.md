@@ -165,6 +165,7 @@ Initial set:
 cd backend
 cp .env.example .env
 go mod tidy
+swag init
 go run main.go
 ```
 
@@ -189,14 +190,6 @@ terraform apply
 - CoinGecko API rate-limited; all price calls are cached and executed in batch once per day.
 - RPC indexer is optimized only for recent activity, not full historical chain scans.
 - Not an official hosted The Graph subgraph (lightweight DB indexer replacement).
-
-## Planned Enhancements
-
-- Migrate indexer to The Graph decentralized network subgraph.
-- DEX liquidity depth comparisons via Uniswap V3 subgraph.
-- Wallet analytics (LST holdings across users).
-- Peg deviation alerts.
-- Automatic ETL to object storage (S3/GCS) for backups.
 
 ## Tech Stack
 
