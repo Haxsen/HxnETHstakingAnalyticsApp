@@ -143,11 +143,14 @@ export function createChartOption(
     },
     tooltip: {
       trigger: 'axis',
-      formatter: (params: any, ticket: any, callback: any) => {
-        if (!params || params.length === 0) return ''
+      formatter: (params: any) => {
+        // Handle both array and single param cases
+        const paramArray = Array.isArray(params) ? params : [params]
+
+        if (!paramArray || paramArray.length === 0) return ''
 
         // Get the data index to find the original timestamp
-        const dataIndex = params[0].dataIndex
+        const dataIndex = paramArray[0].dataIndex
         const originalTimestamp = timestamps[dataIndex]
 
         // Format the full date for tooltip
@@ -159,7 +162,7 @@ export function createChartOption(
 
         let content = `<strong>${fullDate}</strong><br/>`
 
-        params.forEach((param: any) => {
+        paramArray.forEach((param: any) => {
           if (param.value !== null && param.value !== undefined) {
             content += `${param.seriesName}: ${formatPrice(param.value)} ETH<br/>`
           }

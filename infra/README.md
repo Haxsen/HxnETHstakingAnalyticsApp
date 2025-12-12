@@ -6,10 +6,10 @@ This directory contains the Terraform configuration for deploying the HxnETHstak
 
 The infrastructure consists of:
 
-- **PostgreSQL Database**: Free tier database for storing token data, events, and snapshots
+- **PostgreSQL Database**: Free tier database for storing token data
 - **Redis Cache**: Free tier key-value store for API caching
-- **Backend Web Service**: Go API server with REST endpoints
-- **Frontend Static Site**: React SPA served as static site
+- **Backend Web Service**: Go API server with REST endpoints (Hobby plan)
+- **Frontend Static Site**: Next.js app served as static site (Free plan)
 
 ## Prerequisites
 
