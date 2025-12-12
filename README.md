@@ -107,66 +107,6 @@ Current set:
                                                      +--------+
 ```
 
-## Development Phases
-
-- **Phase 1 — Infrastructure Setup (4 hours)** ✅ DONE
-  - Initialize git repo.
-  - Create Terraform configuration for Render:
-    - PostgreSQL (Free Tier).
-    - Backend web service.
-    - Frontend static service.
-  - Apply infra and provision services.
-
-- **Phase 2 — Core Backend APIs (8 hours)** ✅ DONE
-  - Create minimal SQL schema with LST tokens
-  - Initialize Go application with Chi router
-  - Set up Redis connection for caching
-  - Connect PostgreSQL for token metadata
-  - Implement CoinGecko price API with rate limiting
-  - Expose REST endpoints: `/api/tokens`, `/api/token/{symbol}/history`
-
-- **Phase 3 — Frontend MVP (6-8 hours)** ✅ DONE
-  - Next.js + TypeScript application with Apache ECharts
-  - Interactive price comparison chart (all LSTs vs ETH)
-  - Different colored lines for each token with theme support
-  - Connect to backend APIs with error handling
-  - Responsive design with light/dark theme switching
-  - Crypto donate widget with 6 blockchain addresses
-
-- **Phase 4 — Enhanced Features (8-10 hours)** ✅ DONE
-  - APR valuation calculations and rankings (1-year monthly average)
-  - Sortable valuation table with columns:
-    - APR (1-year monthly average APR)
-    - Stability (volatility based on daily return variance)
-    - TVL (Total Value Locked)
-    - Remarks (valuation status: very undervalued → very overvalued)
-  - TVL data integration via on-chain data
-  - Advanced caching strategies for valuation metrics
-
-- **Phase 5 — Production & CI/CD (4 hours)**
-  - GitHub Actions for automated testing
-  - Auto-deploy to Render on push
-  - Environment configuration
-  - Monitoring and logging
-
-- **Phase 6 — Polish & Demo (2-4 hours)**
-  - UI/UX improvements
-  - Performance optimizations
-  - Documentation updates
-  - Demo deployment
-
-## Estimated Effort
-
-| Phase | Time | Status |
-|-------|------|--------|
-| Phase 1: Infrastructure | 4h | ✅ Done |
-| Phase 2: Core Backend | 8h | ✅ Done |
-| Phase 3: Frontend MVP | 6-8h | ✅ Done |
-| Phase 4: Enhanced Features | 8-10h | ✅ Done |
-| Phase 5: Production & CI/CD | 4h | Planned |
-| Phase 6: Polish & Demo | 2-4h | Planned |
-| **Total** | ≈ 32 – 42 hours | |
-
 ## Local Development
 
 ### Backend
@@ -188,7 +128,6 @@ pnpm run dev
 ### Terraform (Deploy to Render)
 ```bash
 cd infra/terraform
-export RENDER_API_KEY="your_api_key_here"
 terraform init
 terraform apply
 ```
@@ -217,7 +156,7 @@ terraform apply
 
 ## License
 
-Copyright © 2025 Haxsen. All rights reserved.
+Copyright © 2025 Haxsen (Hassan Ali). All rights reserved.
 
 See [LICENSE](LICENSE) for details.
 
