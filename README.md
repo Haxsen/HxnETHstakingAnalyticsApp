@@ -151,8 +151,7 @@ terraform apply
 
 ## Demo
 
-🔗 Live Dashboard: TBD  
-📦 Source Code: GitHub link here
+🔗 Live Dashboard: https://eth-staking-analytics-frontend.onrender.com/  
 
 ## License
 
