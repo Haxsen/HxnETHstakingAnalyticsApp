@@ -225,6 +225,20 @@ go build -o app main.go
 ./app
 ```
 
+### Docker Build:
+```bash
+# Build Docker image
+docker build -t eth-staking-analytics-backend .
+
+# Run container
+docker run -p 8080:8080 \
+  -e DATABASE_URL="your_db_url" \
+  -e REDIS_URL="your_redis_url" \
+  -e COINGECKO_API_KEY="your_key" \
+  -e ETHEREUM_RPC_URL="https://ethereum-rpc.publicnode.com" \
+  eth-staking-backend
+```
+
 ### Testing:
 ```bash
 go test ./...

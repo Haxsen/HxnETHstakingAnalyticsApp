@@ -2,7 +2,7 @@
 
 ## ETH staking analytics
 
-Lightweight Liquid Staking Token Analytics Dashboard
+### Lightweight Liquid Staking Token Analytics Dashboard
 
 ETH staking analytics is a minimal full-stack Web3 analytics project that compares leading Ethereum Liquid Staking Tokens (LSTs) using 1-year price history data.
 
@@ -54,7 +54,7 @@ The application visualizes LST token performance against ETH on an interactive c
      - Render frontend static site
      - Render Postgres database
      - Render Redis cache
-   - Git-based continuous deploys.
+   - Git-based continuous deploys (WIP).
 
 ## Tracked LSTs
 
@@ -72,7 +72,7 @@ Current set:
 - TETH – Treehouse
 - SFRXETH – Frax
 - CDCETH – Crypto.com
-- UNIETH – Universal
+- UNIETH – Universal (RockX / Bedrock)
 
 ## Key Features
 
@@ -215,11 +215,17 @@ terraform apply
 🔗 Live Dashboard: TBD  
 📦 Source Code: GitHub link here
 
+## License
+
+Copyright © 2025 Haxsen. All rights reserved.
+
+See [LICENSE](LICENSE) for details.
+
 ## Author
 
-I (haxsen) built this as a Web3 frontend + backend + devops portfolio project showcasing:
+I (haxsen / Hassan Ali) built this as a Web3 frontend + backend + devops portfolio project showcasing:
 
-✅ Data indexing  
-✅ Blockchain RPC & contract calls  
-✅ DeFi valuation analytics  
+✅ Data indexing
+✅ Blockchain RPC & contract calls
+✅ DeFi valuation analytics
 ✅ Infra-as-code & CI/CD deployment

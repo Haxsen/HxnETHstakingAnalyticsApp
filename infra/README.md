@@ -7,28 +7,31 @@ This directory contains the Terraform configuration for deploying the HxnETHstak
 The infrastructure consists of:
 
 - **PostgreSQL Database**: Free tier database for storing token data, events, and snapshots
-- **Backend Web Service**: Node.js/TypeScript API server with indexer
+- **Redis Cache**: Free tier key-value store for API caching
+- **Backend Web Service**: Go API server with REST endpoints
 - **Frontend Static Site**: React SPA served as static site
 
 ## Prerequisites
 
 - Render account with API access
 - Render API key (get from Render dashboard → Account → API)
+- Render username/owner ID
 - Environment variables configured (see .env.example)
 
 ## Files
 
 - `main.tf`: Main Terraform configuration defining the Render resources
-- `variables.tf`: Input variables (API key)
-- `outputs.tf`: Output values (service URLs)
-- `terraform.tfvars`: Variable values (add your actual Render API key here)
-- `.env.example`: Example Render API key for reference
+- `variables.tf`: Input variables (API key and owner ID)
+- `outputs.tf`: Output values (service URLs and names)
+- `terraform.tfvars`: Variable values (add your actual credentials here)
+- `.env.example`: Example configuration reference
 
 ## Deployment
 
-1. Add your Render API key to `terraform.tfvars`:
+1. Add your Render credentials to `terraform.tfvars`:
    ```hcl
-   render_api_key = "your_actual_api_key_here"
+   render_api_key  = "your_actual_api_key_here"
+   render_owner_id = "your_render_username"
    ```
 
 2. Initialize Terraform:
@@ -50,9 +53,19 @@ The infrastructure consists of:
 
 After Terraform creates the resources, manually set environment variables in the Render dashboard:
 
-- **Backend Service**: Add `DATABASE_URL` with the database connection string from the PostgreSQL service
-- **Backend Service**: Add `NODE_ENV=production`
-- **Backend Service**: Add any other required env vars (CoinGecko API key, RPC endpoints, etc.)
+### Backend Service Environment Variables:
+- `DATABASE_URL`: PostgreSQL connection string (from Render dashboard)
+- `REDIS_URL`: Redis connection string (from Render dashboard)
+- `COINGECKO_API_KEY`: Your CoinGecko API key
+- `ETHEREUM_RPC_URL`: Ethereum RPC endpoint (default: https://ethereum-rpc.publicnode.com)
+- `PORT`: 10000 (Render default)
+
+### Database Setup:
+After deployment, run the database schema:
+```bash
+# Connect to your Render PostgreSQL database and run:
+psql -h [your-db-host] -U [your-db-user] -d [your-db-name] < backend/schema.sql
+```
 
 ## Notes
 
@@ -67,4 +80,4 @@ GitHub Repo
     ↓
 Terraform → Render Services
     ↓
-PostgreSQL + Backend API + Frontend Site
+PostgreSQL + Redis + Backend API + Frontend Site

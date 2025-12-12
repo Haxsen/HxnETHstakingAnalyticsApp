@@ -8,21 +8,30 @@ terraform {
 }
 
 provider "render" {
-  api_key = var.render_api_key
+  api_key  = var.render_api_key
+  owner_id = var.render_owner_id
 }
 
 # PostgreSQL Database
 resource "render_postgres" "database" {
   name     = "eth-staking-analytics-db"
   plan     = "free"
-  region   = "oregon"
+  region   = "frankfurt"
   version  = "16"
+}
+
+# Redis Cache
+resource "render_redis" "cache" {
+  name               = "eth-staking-analytics-redis"
+  plan               = "free"
+  region             = "frankfurt"
+  max_memory_policy  = "allkeys_lru"
 }
 
 # Backend Web Service
 resource "render_web_service" "backend" {
   name     = "eth-staking-analytics-backend"
-  region   = "oregon"
+  region   = "frankfurt"
   plan     = "free"
 
   runtime_source = {
@@ -30,7 +39,7 @@ resource "render_web_service" "backend" {
       runtime = "go"
       repo_url = "https://github.com/Haxsen/HxnETHstakingAnalyticsApp"
       branch = "main"
-      build_command = "cd backend && go build -o app ."
+      build_command = "cd backend && go build -o app main.go"
     }
   }
   start_command = "./app"
