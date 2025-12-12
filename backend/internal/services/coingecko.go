@@ -44,6 +44,14 @@ var symbolToCoinGeckoID = map[string]string{
 	"rETH":    "rocket-pool-eth",
 	"wBETH":   "wrapped-beacon-eth",
 	"pufETH":  "pufeth",
+	"LSETH":   "liquid-staked-ethereum",
+	"RSETH":   "kelp-dao-restaked-eth",
+	"METH":    "mantle-staked-ether",
+	"CBETH":   "coinbase-wrapped-staked-eth",
+	"TETH":    "treehouse-eth",
+	"SFRXETH": "staked-frax-ether",
+	"CDCETH":  "crypto-com-staked-eth",
+	"UNIETH":  "universal-eth",
 }
 
 // GetCoinGeckoID returns the CoinGecko ID for a given symbol

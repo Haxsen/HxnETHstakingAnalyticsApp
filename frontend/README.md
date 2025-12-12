@@ -204,8 +204,9 @@ This section outlines the implementation plan for Phase 3 frontend MVP (estimate
 ## Phase 4 — Enhanced Features (6-8 hours)
 
 ### Simple Valuation Table (3 hours)
-- Add a sortable table below the existing chart showing: Token, APR, Stability, TVL, Remarks
-- Basic column sorting for APR, Stability, TVL (ascending/descending)
+- Add a sortable table below the existing chart showing: Token, APR, Stability Rating, TVL, Remarks
+- Basic column sorting for APR, Stability Rating, TVL (ascending/descending)
+- Stability displayed as rating out of 10 (e.g., "8/10") where higher = more stable
 - Color-code remarks: green for "Undervalued"/"Very Undervalued", red for "Overvalued"/"Very Overvalued"
 - Keep table responsive and simple with horizontal scroll on mobile
 

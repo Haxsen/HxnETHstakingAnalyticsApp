@@ -8,6 +8,14 @@ const TOKEN_COLORS: Record<string, string> = {
   rETH: '#fac858',
   wBETH: '#ee6666',
   pufETH: '#73c0de',
+  LSETH: '#ff7c7c',
+  RSETH: '#ffb347',
+  METH: '#87ceeb',
+  CBETH: '#dda0dd',
+  TETH: '#98fb98',
+  SFRXETH: '#f0e68c',
+  CDCETH: '#ffa07a',
+  UNIETH: '#20b2aa',
   ETH: '#3ba272', // Reference ETH color
 }
 

@@ -56,15 +56,23 @@ The application visualizes LST token performance against ETH on an interactive c
      - Render Redis cache
    - Git-based continuous deploys.
 
-## Tracked LSTs (MVP)
+## Tracked LSTs
 
-Initial set:
+Current set:
 
 - wstETH – Lido
 - ankrETH – Ankr
 - rETH – Rocket Pool
 - wBETH – Binance
 - pufETH – Puffer Finance
+- LSETH – Liquid Collective
+- RSETH – Kelp DAO
+- METH – Mantle
+- CBETH – Coinbase
+- TETH – Treehouse
+- SFRXETH – Frax
+- CDCETH – Crypto.com
+- UNIETH – Universal
 
 ## Key Features
 

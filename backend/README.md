@@ -148,16 +148,18 @@ monthly_return[m] = monthly_avg[m] - monthly_avg[m-1]  # For m = 2 to 12
 apr = sum(monthly_return[1..12])
 ```
 
-### Stability Score
+### Stability Rating
 
-Calculated as the coefficient of variation of daily returns:
+Calculated as the coefficient of variation of daily returns, then normalized to a 1-10 rating scale:
 
 ```
-stability = 1 / (1 + std_dev(daily_return[1..365]) / abs(mean(daily_return[1..365])))
+stability_raw = 1 / (1 + std_dev(daily_return[1..365]) / abs(mean(daily_return[1..365])))
+stability_rating = round(1 + (stability_raw - min_stability) / (max_stability - min_stability) * 9)
 ```
 
-- Higher stability score → more consistent daily performance
-- Lower stability score → higher volatility in daily returns
+- **10/10**: Most stable token (lowest volatility)
+- **1/10**: Least stable token (highest volatility)
+- Rating is relative to other tokens in the current dataset
 
 ### TVL (Total Value Locked)
 
@@ -192,7 +194,7 @@ expected_price = (average_monthly_return ÷ 2) + last_month_average
 ### Valuation Calculations
 - **APR Calculation**: 1-year monthly average APR from 30-day price chunks (360 days total)
 - **Monthly Processing**: Groups daily prices into 12 monthly averages, calculates differences
-- **Stability Score**: Coefficient of variation of daily returns (higher = more stable)
+- **Stability Rating**: 1-10 rating scale based on coefficient of variation (10/10 = most stable)
 - **Valuation Remarks**: 5-level assessment based on current price vs. expected price projection
 - **Expected Price Formula**: `(average_monthly_return ÷ 2) + last_month_average`
 

@@ -56,6 +56,19 @@ export default function ValuationTable({ valuations, loading = false }: Valuatio
     return `${tvl.toFixed(0)}`
   }
 
+  const calculateStabilityRating = (stability: number, allStabilities: number[]) => {
+    if (allStabilities.length === 0) return 1
+
+    const maxStability = Math.max(...allStabilities)
+    const minStability = Math.min(...allStabilities)
+
+    if (maxStability === minStability) return 5 // If all values are the same, give middle rating
+
+    // Normalize to 1-10 scale where max gets 10 and min gets 1
+    const rating = 1 + ((stability - minStability) / (maxStability - minStability)) * 9
+    return Math.max(1, Math.min(10, Math.round(rating)))
+  }
+
   const getRemarksColor = (remarks: string) => {
     switch (remarks) {
       case 'Very Undervalued':
@@ -122,7 +135,7 @@ export default function ValuationTable({ valuations, loading = false }: Valuatio
               onClick={() => handleSort('stability')}
               style={{ color: 'rgb(var(--text-secondary))' }}
             >
-              Stability <SortIcon field="stability" />
+              Stability Rating <SortIcon field="stability" />
             </th>
             <th
               className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -153,7 +166,7 @@ export default function ValuationTable({ valuations, loading = false }: Valuatio
                 {(valuation.apr * 100).toFixed(2)}%
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'rgb(var(--text-primary))' }}>
-                {Math.max(0, Math.min(100, valuation.stability * 3000)).toFixed(1)}%
+                {calculateStabilityRating(valuation.stability, valuations.map(v => v.stability))}/10
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm" style={{ color: 'rgb(var(--text-primary))' }}>
                 {formatTVL(valuation.tvl)}
