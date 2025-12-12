@@ -76,7 +76,7 @@ Current set:
 
 ## Key Features
 
-- **Advanced Valuation**: APR calculations, stability scoring, and price-based valuation remarks
+- **Advanced Valuation**: APR calculations, stability rating (1-10 scale), and price-based valuation remarks
 - **Real-time TVL**: On-chain total supply data for accurate circulating supply metrics
 - **Comprehensive Analytics**: 1-year price history with interactive charting
 - **Performance Optimized**: Redis caching for fast data retrieval

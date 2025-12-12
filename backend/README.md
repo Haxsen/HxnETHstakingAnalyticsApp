@@ -30,27 +30,32 @@ HTTP Requests → API Handlers → Services → Redis Cache / External APIs
 
 ```
 backend/
-├── main.go                 # Application entry point with routes & handlers
+├── main.go                 # Application entry point (~25 lines)
 ├── go.mod                  # Go modules file
 ├── go.sum                  # Dependency checksums
 ├── .env.example           # Environment variables template
 ├── README.md              # This file
 ├── schema.sql             # Database schema
 ├── docs/                  # Generated Swagger documentation
-│   ├── docs.go
-│   ├── swagger.json
-│   └── swagger.yaml
+├── BACKEND_REFACTOR_PLAN.md # Refactor documentation
 ├── internal/
+│   ├── api/               # HTTP transport layer
+│   │   ├── handlers.go    # HTTP handlers with dependency injection
+│   │   └── responses.go   # Common JSON response helpers
+│   ├── server/            # Server management & DI container
+│   │   └── server.go      # Server struct with clean startup/shutdown
+│   ├── services/          # Business logic layer
+│   │   ├── token_service.go    # Token business operations
+│   │   ├── valuation_service.go # Valuation calculations & caching
+│   │   ├── cache.go       # Caching wrapper functions
+│   │   ├── coingecko.go   # CoinGecko API client
+│   │   ├── tvl.go         # On-chain TVL fetching via ERC20 totalSupply
+│   │   └── valuation.go   # APR calculations, stability rating, valuation remarks
 │   ├── db/                # Database layer
 │   │   ├── connection.go  # PostgreSQL connection
 │   │   └── models.go      # Data models & queries
-│   ├── cache/             # Redis caching layer
-│   │   └── redis.go       # Redis client setup
-│   └── services/          # Business logic & external APIs
-│       ├── cache.go       # Caching wrapper functions
-│       ├── coingecko.go   # CoinGecko API client
-│       ├── tvl.go         # On-chain TVL fetching via ERC20 totalSupply
-│       └── valuation.go   # APR calculations, stability scoring, valuation remarks
+│   └── cache/             # Redis caching layer
+│       └── redis.go       # Redis client setup
 ```
 
 ## Prerequisites
