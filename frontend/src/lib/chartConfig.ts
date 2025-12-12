@@ -1,23 +1,31 @@
 import { EChartsOption } from 'echarts'
 import { ChartDataPoint, ChartSeries, Token } from './types'
 
-// Color palette for different tokens
-const TOKEN_COLORS: Record<string, string> = {
-  wstETH: '#5470c6',
-  ankrETH: '#91cc75',
-  rETH: '#fac858',
-  wBETH: '#ee6666',
-  pufETH: '#73c0de',
-  LSETH: '#ff7c7c',
-  RSETH: '#ffb347',
-  METH: '#87ceeb',
-  CBETH: '#dda0dd',
-  TETH: '#98fb98',
-  SFRXETH: '#f0e68c',
-  CDCETH: '#ffa07a',
-  UNIETH: '#20b2aa',
-  ETH: '#3ba272', // Reference ETH color
+// Predefined distinct colors for tokens (primary color palette)
+const TOKEN_COLOR_PALETTE: Record<string, string> = {
+  wstETH: '#ff0000',    // Red
+  ankrETH: '#ffa500',   // Orange
+  rETH: '#ffff00',      // Yellow
+  wBETH: '#008000',     // Green
+  pufETH: '#00ffff',    // Cyan
+  LSETH: '#0000ff',     // Blue
+  RSETH: '#800080',     // Purple
+  METH: '#ff00ff',      // Magenta
+  CBETH: '#a52a2a',     // Brown
+  TETH: '#ffd700',      // Gold/Amber
+  SFRXETH: '#32cd32',   // Lime Green
+  CDCETH: '#ffc0cb',    // Pink
+  UNIETH: '#008080',    // Teal
+  ETH: '#808080',       // Gray (for reference line)
 }
+
+// Get token colors (returns predefined colors)
+function getTokenColors(): Record<string, string> {
+  return { ...TOKEN_COLOR_PALETTE }
+}
+
+// Color palette for different tokens
+const TOKEN_COLORS: Record<string, string> = getTokenColors()
 
 // Default color for unknown tokens
 const DEFAULT_COLOR = '#cccccc'
