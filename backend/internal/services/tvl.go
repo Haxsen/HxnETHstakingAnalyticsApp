@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"os"
 	"strings"
 	"time"
 
@@ -120,14 +121,22 @@ func GetCachedTVL(ctx context.Context, symbol string) (*TVLData, error) {
 	return &cached.Data, nil
 }
 
-// SetCachedTVL stores TVL data in cache for 5 minutes
+// SetCachedTVL stores TVL data in cache
 func SetCachedTVL(ctx context.Context, symbol string, data TVLData) error {
+	cacheDurationStr := os.Getenv("TVL_CACHE_DURATION")
+	cacheDuration := 5 * time.Minute
+	if cacheDurationStr != "" {
+		if parsed, err := time.ParseDuration(cacheDurationStr); err == nil {
+			cacheDuration = parsed
+		}
+	}
+
 	cacheKey := fmt.Sprintf("tvl:%s", symbol)
 
 	cached := CachedTVLData{
 		Data:      data,
 		CachedAt:  time.Now(),
-		ExpiresAt: time.Now().Add(5 * time.Minute),
+		ExpiresAt: time.Now().Add(cacheDuration),
 	}
 
 	cachedData, err := json.Marshal(cached)
@@ -135,7 +144,7 @@ func SetCachedTVL(ctx context.Context, symbol string, data TVLData) error {
 		return fmt.Errorf("failed to marshal cache data: %w", err)
 	}
 
-	return cache.Set(ctx, cacheKey, string(cachedData), 5*time.Minute)
+	return cache.Set(ctx, cacheKey, string(cachedData), cacheDuration)
 }
 
 // FetchTVL fetches TVL data with caching

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math"
+	"os"
 	"sort"
 	"time"
 
@@ -207,14 +208,22 @@ func GetCachedValuation(ctx context.Context, symbol string) (*ValuationData, err
 	return &cached.Data, nil
 }
 
-// SetCachedValuation stores valuation data in cache for 10 minutes
+// SetCachedValuation stores valuation data in cache
 func SetCachedValuation(ctx context.Context, symbol string, data ValuationData) error {
+	cacheDurationStr := os.Getenv("VALUATION_CACHE_DURATION")
+	cacheDuration := 10 * time.Minute
+	if cacheDurationStr != "" {
+		if parsed, err := time.ParseDuration(cacheDurationStr); err == nil {
+			cacheDuration = parsed
+		}
+	}
+
 	cacheKey := fmt.Sprintf("valuation:%s", symbol)
 
 	cached := CachedValuationData{
 		Data:      data,
 		CachedAt:  time.Now(),
-		ExpiresAt: time.Now().Add(10 * time.Minute),
+		ExpiresAt: time.Now().Add(cacheDuration),
 	}
 
 	cachedData, err := json.Marshal(cached)
@@ -222,7 +231,7 @@ func SetCachedValuation(ctx context.Context, symbol string, data ValuationData) 
 		return fmt.Errorf("failed to marshal cache data: %w", err)
 	}
 
-	return cache.Set(ctx, cacheKey, string(cachedData), 10*time.Minute)
+	return cache.Set(ctx, cacheKey, string(cachedData), cacheDuration)
 }
 
 // CalculateValuation computes all valuation metrics for a token

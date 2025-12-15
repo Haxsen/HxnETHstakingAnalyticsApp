@@ -157,7 +157,7 @@ export default function Home() {
             <div className="flex items-center justify-center h-96">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderBottomColor: 'rgb(59, 130, 246)' }}></div>
-                <p style={{ color: 'rgb(var(--text-secondary))' }}>Loading price data...</p>
+                <p style={{ color: 'rgb(var(--text-secondary))' }}>Loading price data (first time may take ~3 minutes)...</p>
               </div>
             </div>
           ) : tokens.length > 0 ? (

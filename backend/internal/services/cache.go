@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/Haxsen/HxnETHstakingAnalyticsApp/backend/internal/cache"
@@ -43,15 +44,23 @@ func GetCachedPriceHistory(ctx context.Context, symbol string) ([]PricePoint, er
 	return cached.Data, nil
 }
 
-// SetCachedPriceHistory stores price history in cache for 1 hour
+// SetCachedPriceHistory stores price history in cache
 func SetCachedPriceHistory(ctx context.Context, symbol string, data []PricePoint) error {
+	cacheDurationStr := os.Getenv("PRICE_HISTORY_CACHE_DURATION")
+	cacheDuration := 1 * time.Hour
+	if cacheDurationStr != "" {
+		if parsed, err := time.ParseDuration(cacheDurationStr); err == nil {
+			cacheDuration = parsed
+		}
+	}
+
 	cacheKey := fmt.Sprintf("price_history:%s", symbol)
 
 	cached := CachedPriceHistory{
 		Symbol:    symbol,
 		Data:      data,
 		CachedAt:  time.Now(),
-		ExpiresAt: time.Now().Add(1 * time.Hour), // 1 hour TTL
+		ExpiresAt: time.Now().Add(cacheDuration),
 	}
 
 	cachedData, err := json.Marshal(cached)
@@ -59,7 +68,7 @@ func SetCachedPriceHistory(ctx context.Context, symbol string, data []PricePoint
 		return fmt.Errorf("failed to marshal cache data: %w", err)
 	}
 
-	return cache.Set(ctx, cacheKey, string(cachedData), 1*time.Hour)
+	return cache.Set(ctx, cacheKey, string(cachedData), cacheDuration)
 }
 
 // GetPriceHistoryWithCache fetches price history with caching
